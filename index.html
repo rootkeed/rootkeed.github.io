@@ -5,37 +5,22 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>JAILME</title>
 <style>
-  * { margin:0; padding:0; box-sizing:border-box; }
-  html, body { background:#0a0e27; color:#e8eef2; font:15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; min-height:100vh; }
-  #brand { padding:24px; border-bottom:1px solid #1a2847; text-align:center; }
-  #brand b { font-size:32px; font-weight:700; letter-spacing:.15em; color:#00d9ff; }
-  #wrap { padding:32px 24px; max-width:600px; margin:0 auto; }
-  #state { font-size:18px; font-weight:600; margin-bottom:16px; }
-  #det { font-size:14px; color:#a8b2ba; margin-bottom:8px; }
-  #det b { color:#e8eef2; font-weight:600; }
-  #cache { font-size:12px; color:#6b7280; margin-top:12px; min-height:16px; }
-  #cache.cacheok { color:#00d9ff; }
-  .ok { color:#00d9ff; } .bad { color:#ff6b6b; } .warn { color:#ffa500; }
+  * { margin:0; padding:0; }
+  body { background:#000; color:#fff; font:14px monospace; padding:20px; }
 </style>
 </head>
 <body>
-<div id="brand"><b>JAILME</b></div>
-<div id="wrap">
-  <div id="state">detecting firmware...</div>
-  <div id="det"></div>
-  <div id="cache"></div>
-</div>
+<div id="state">detecting firmware...</div>
+<div id="det"></div>
+<div id="cache"></div>
 <script>
 (function () {
     var stateEl = document.getElementById("state");
     var detEl = document.getElementById("det");
     var cacheEl = document.getElementById("cache");
-    function setState(t, c) { stateEl.textContent = t; stateEl.className = c || ""; }
-    function setCache(t, ok) { cacheEl.textContent = t; cacheEl.className = ok ? "cacheok" : ""; }
     var params = new URLSearchParams(location.search);
 
     var SUPPORTED = { 1302: 1, 1304: 1, 1350: 1, 1352: 1 };
-
     var key = null, fwnum = null;
     var m = /PlayStation\s+4[\/\s](\d+)\.(\d+)/.exec(navigator.userAgent);
     if (m) {
@@ -45,23 +30,20 @@
         fwnum = parseInt(m[1], 10) * 100 + parseInt(ms, 10);
     }
 
-    var forced = params.get("force") === "1";
-    var supported = forced || (fwnum !== null && SUPPORTED[fwnum] === 1);
-    detEl.innerHTML = "firmware <b>" + (key || "unknown") + "</b>" + (supported ? " &middot; <b>supported</b>" : " &middot; not in this build's kernel table");
+    var supported = params.get("force") === "1" || (fwnum !== null && SUPPORTED[fwnum] === 1);
+    detEl.textContent = "firmware: " + (key || "unknown") + (supported ? " (supported)" : " (not supported)");
 
     var target = "jb.html" + location.search;
-    function go() { setState("loading jailbreak...", "warn"); location.replace(target); }
-
-    function waitForTap(msg, action) {
-        setState(msg, "warn");
+    function go() { location.replace(target); }
+    function waitForTap(action) {
         function fire() { window.removeEventListener("click", fire); window.removeEventListener("keydown", fire); action(); }
         window.addEventListener("click", fire);
         window.addEventListener("keydown", fire);
     }
 
     if (!supported) {
-        setState("UNSUPPORTED FIRMWARE", "bad");
-        waitForTap("UNSUPPORTED (" + (key || "unknown") + ") -- press X or tap to run anyway", go);
+        stateEl.textContent = "unsupported firmware";
+        waitForTap(go);
         return;
     }
 
@@ -69,24 +51,21 @@
     if (!ac || !document.documentElement.hasAttribute("manifest")) {
         go();
     } else if (!navigator.onLine) {
-        setCache("offline -- from cache", true);
+        cacheEl.textContent = "offline";
         go();
     } else if (ac.status === ac.IDLE) {
-        setCache("cached", true);
+        cacheEl.textContent = "cached";
         go();
     } else if (ac.status === ac.UPDATEREADY) {
         try { ac.swapCache(); } catch (e) {}
-        setCache("update downloaded", true);
-        waitForTap("UPDATE READY -- press X or tap to reload & run", function () { location.reload(); });
+        cacheEl.textContent = "update ready";
+        waitForTap(function () { location.reload(); });
     } else {
-        setCache("checking cache...");
-        ac.addEventListener("downloading", function () { setCache("caching for offline (first run)..."); }, false);
-        ac.addEventListener("progress", function (e) { if (e && e.total) setCache("caching " + Math.round((e.loaded / e.total) * 100) + "%"); }, false);
-        ac.addEventListener("cached", function () { setCache("cached for offline use", true); waitForTap("CACHED (first run) -- press X or tap to run", go); }, false);
-        ac.addEventListener("updateready", function () { try { ac.swapCache(); } catch (e) {} setCache("update downloaded", true); waitForTap("UPDATE READY -- press X or tap to reload & run", function () { location.reload(); }); }, false);
-        ac.addEventListener("noupdate", function () { setCache("cached -- offline ready", true); go(); }, false);
-        ac.addEventListener("error", function () { setCache("cache unavailable"); waitForTap("CACHE FAILED -- press X or tap to run anyway", go); }, false);
-        ac.addEventListener("obsolete", function () { setCache("cache obsolete"); waitForTap("CACHE OBSOLETE -- press X or tap to run", go); }, false);
+        cacheEl.textContent = "checking cache...";
+        ac.addEventListener("cached", function () { cacheEl.textContent = "cached"; waitForTap(go); }, false);
+        ac.addEventListener("updateready", function () { try { ac.swapCache(); } catch (e) {} cacheEl.textContent = "update ready"; waitForTap(function () { location.reload(); }); }, false);
+        ac.addEventListener("noupdate", function () { cacheEl.textContent = "cached"; go(); }, false);
+        ac.addEventListener("error", function () { cacheEl.textContent = "cache error"; waitForTap(go); }, false);
     }
 })();
 </script>
