@@ -10,7 +10,7 @@
   body {
     background:#000;
     color:#fff;
-    font:14px monospace;
+    font:16px monospace;
     display:flex;
     flex-direction:column;
     justify-content:center;
@@ -18,21 +18,20 @@
     text-align:center;
     min-height:100vh;
   }
-  #state { display:block; }
+  #state { display:block; margin-bottom:20px; }
   #done { display:none; }
   .done #state { display:none; }
-  .done #done, .fail #done { display:flex; flex-direction:column; align-items:center; justify-content:center; }
-  #done img { width:220px; margin-bottom:20px; }
-  #done p { font-size:18px; }
+  .done #done { display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  #done img { width:240px; margin-bottom:20px; }
+  #done p { font-size:20px; margin-top:10px; }
 </style>
 </head>
 <body>
-<div id="state">jailbreak running...</div>
+<div id="state">running...</div>
 <div id="done">
   <img src="goldhen.png" alt="Success" />
-  <p>DONE</p>
+  <p>SUCCESS</p>
 </div>
-<div id="out"></div>
 <script type="module">
   import "./jb.js?v=19";
 </script>
