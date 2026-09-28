@@ -1,201 +1,49 @@
 <!doctype html>
 <html lang="en" manifest="cache.appcache">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>JAILME</title>
-    <style>
-      html,
-      body {
-        margin: 0;
-        padding: 0;
-        min-height: 100%;
-        background: #0a0e27;
-        color: #e8eef2;
-        font:
-          15px/1.45 "Helvetica Neue",
-          system-ui,
-          sans-serif;
-      }
-      
-      #brand {
-        text-align: center;
-        padding: 20px 0;
-        background: #0a0e27;
-        border-bottom: 2px solid #1a2847;
-      }
-      
-      #brand b {
-        font-size: 32px;
-        font-weight: 700;
-        letter-spacing: 0.2em;
-        color: #00d9ff;
-        text-shadow: 0 0 15px rgba(0, 217, 255, 0.5);
-      }
-
-      /* running: a spinner under the brand. jb.js sets body.done / body.fail / body.log. */
-      #spin {
-        position: fixed;
-        top: calc(50% + 20px);
-        left: 50%;
-        width: 70px;
-        height: 70px;
-        margin: -35px 0 0 -35px;
-        border: 6px solid #1a2847;
-        border-top-color: #00d9ff;
-        border-radius: 50%;
-        animation: spin 0.8s linear infinite;
-        box-shadow: 0 0 30px rgba(0, 217, 255, 0.5), inset 0 0 30px rgba(0, 217, 255, 0.1);
-      }
-      
-      @keyframes spin {
-        to {
-          transform: rotate(360deg);
-        }
-      }
-      
-      #doneImage {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 240px;
-        height: 240px;
-        display: none;
-        animation: slideDown 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-        filter: drop-shadow(0 0 25px rgba(0, 217, 255, 0.6));
-      }
-      
-      @keyframes slideDown {
-        0% {
-          transform: translate(-50%, -60%);
-          opacity: 0;
-        }
-        100% {
-          transform: translate(-50%, -50%);
-          opacity: 1;
-        }
-      }
-      
-      #msg {
-        position: fixed;
-        top: calc(50% + 150px);
-        left: 0;
-        right: 0;
-        text-align: center;
-        font-size: 20px;
-        letter-spacing: 0.1em;
-        display: none;
-        font-weight: 600;
-      }
-      
-      #wrap {
-        padding: 0;
-      }
-      
-      #state,
-      #out {
-        display: none;
-      }
-
-      body.done #spin {
-        display: none;
-      }
-      
-      body.done #doneImage {
-        display: block;
-      }
-      
-      body.fail #spin {
-        display: none;
-      }
-      
-      body.fail #msg {
-        display: block;
-        color: #ff6b6b;
-        top: 50%;
-      }
-      
-      body.done #msg {
-        display: block;
-        color: #00d9ff;
-        font-weight: 700;
-        letter-spacing: 0.15em;
-        text-shadow: 0 0 10px rgba(0, 217, 255, 0.4);
-      }
-
-      /* ?log=1 -- the full step log, styled like the landing. */
-      body.log #spin,
-      body.log #msg,
-      body.log #doneImage {
-        display: none;
-      }
-      
-      body.log #wrap {
-        padding: 16px 20px;
-      }
-      
-      body.log #state {
-        display: block;
-        font-size: 24px;
-        font-weight: 700;
-        margin: 0 0 12px;
-        color: #00d9ff;
-      }
-      
-      body.log #out {
-        display: block;
-        white-space: pre-wrap;
-        font:
-          13px/1.45 Consolas,
-          monospace;
-        background: #0a0e27;
-        border: 2px solid #1a2847;
-        border-radius: 3px;
-        padding: 12px 16px;
-        height: calc(100vh - 160px);
-        overflow-y: auto;
-        color: #00d9ff;
-      }
-      
-      .ok {
-        color: #00d9ff;
-      }
-      
-      .bad {
-        color: #ff6b6b;
-      }
-      
-      .warn {
-        color: #ffa500;
-      }
-      
-      .safe {
-        color: #00d9ff;
-      }
-      
-      .danger {
-        color: #ff6b6b;
-      }
-      
-      code {
-        color: #00d9ff;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="brand">
-      <b>JAILME</b>
-    </div>
-    <div id="spin"></div>
-    <img id="doneImage" src="goldhen.png" alt="Jailbreak Success" />
-    <div id="msg">Restart your console</div>
-    <div id="wrap">
-      <div id="state"></div>
-      <div id="out"></div>
-    </div>
-    <script type="module">
-      import "./jb.js?v=19";
-    </script>
-  </body>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>JAILME</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { background:#0a0e27; color:#e8eef2; font:15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; min-height:100vh; display:flex; flex-direction:column; }
+  #brand { padding:24px; border-bottom:1px solid #1a2847; text-align:center; flex-shrink:0; }
+  #brand b { font-size:32px; font-weight:700; letter-spacing:.15em; color:#00d9ff; }
+  body.done #brand b::after { content:" ✓"; color:#00ff00; margin-left:12px; }
+  #container { flex:1; display:flex; align-items:center; justify-content:center; padding:24px; }
+  #spinner { width:80px; height:80px; border:5px solid #1a2847; border-top-color:#00d9ff; border-radius:50%; animation:spin 1s linear infinite; box-shadow:0 0 30px rgba(0,217,255,0.4); }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  #success { display:none; text-align:center; }
+  body.done #spinner { display:none; }
+  body.done #success { display:block; animation:fadeIn 0.6s ease-out; }
+  @keyframes fadeIn { from { opacity:0; transform:scale(0.9); } to { opacity:1; transform:scale(1); } }
+  #success img { width:200px; height:200px; margin-bottom:20px; filter:drop-shadow(0 0 20px rgba(0,217,255,0.5)); }
+  #success p { font-size:20px; font-weight:600; color:#00d9ff; letter-spacing:.1em; }
+  body.fail #spinner { display:none; }
+  body.fail #success { display:block; }
+  body.fail #success p { color:#ff6b6b; }
+  body.log #container { display:none; }
+  body.log #wrap { display:block; padding:20px; flex:1; overflow-y:auto; }
+  #wrap { display:none; }
+  #state { font-size:18px; font-weight:700; margin-bottom:12px; color:#00d9ff; }
+  #out { background:#111; border:1px solid #1a2847; border-radius:4px; padding:12px; font-family:Consolas, monospace; font-size:12px; line-height:1.5; white-space:pre-wrap; word-wrap:break-word; color:#00d9ff; max-height:calc(100vh - 100px); overflow-y:auto; }
+</style>
+</head>
+<body>
+<div id="brand"><b>JAILME</b></div>
+<div id="container">
+  <div id="spinner"></div>
+  <div id="success">
+    <img src="goldhen.png" alt="Success" />
+    <p>JAILBREAK COMPLETE</p>
+  </div>
+</div>
+<div id="wrap">
+  <div id="state"></div>
+  <div id="out"></div>
+</div>
+<script type="module">
+  import "./jb.js?v=19";
+</script>
+</body>
 </html>
