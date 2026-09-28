@@ -6,9 +6,24 @@
 <title>JAILME</title>
 <style>
   * { margin:0; padding:0; }
-  body { background:#000; color:#fff; font:14px monospace; padding:20px; }
+  html, body { height:100%; }
+  body {
+    background:#000;
+    color:#fff;
+    font:14px monospace;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    min-height:100vh;
+  }
+  #state { display:block; }
   #done { display:none; }
-  #done img { width:300px; margin:20px 0; }
+  .done #state { display:none; }
+  .done #done, .fail #done { display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  #done img { width:220px; margin-bottom:20px; }
+  #done p { font-size:18px; }
 </style>
 </head>
 <body>
@@ -19,10 +34,6 @@
 </div>
 <div id="out"></div>
 <script type="module">
-  var stateEl = document.getElementById("state");
-  var doneEl = document.getElementById("done");
-  var outEl = document.getElementById("out");
-  
   import "./jb.js?v=19";
 </script>
 </body>

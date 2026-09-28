@@ -6,7 +6,19 @@
 <title>JAILME</title>
 <style>
   * { margin:0; padding:0; }
-  body { background:#000; color:#fff; font:14px monospace; padding:20px; }
+  html, body { height:100%; }
+  body {
+    background:#000;
+    color:#fff;
+    font:14px monospace;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    min-height:100vh;
+  }
+  #state, #det, #cache { display:block; width:100%; }
 </style>
 </head>
 <body>
